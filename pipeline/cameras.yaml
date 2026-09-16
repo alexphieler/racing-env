@@ -1,0 +1,57 @@
+rendering:
+  shadows: true
+
+cameras:
+  - sensor:
+      name: "camera_left"
+      enabled: true
+      rate: 10.0
+      delay:
+        mean: 0.0
+      pose:
+        position: [-0.37, 0.05, 1.05]
+        orientation: [0.0, 0.2617993878, 1.2217304764]
+      resolution:
+        x: 306
+        y: 256
+      intrinsics:
+        fx: 205.25
+        fy: 205.25
+        cx: 153.0
+        cy: 128.0
+
+  - sensor:
+      name: "camera_front"
+      enabled: true
+      rate: 10.0
+      delay:
+        mean: 0.0
+      pose:
+        position: [-0.37, 0.0, 1.05]
+        orientation: [0.0, 0.2617993878, 0.0]
+      resolution:
+        x: 306
+        y: 256
+      intrinsics:
+        fx: 205.25
+        fy: 205.25
+        cx: 153.0
+        cy: 128.0
+
+  - sensor:
+      name: "camera_right"
+      enabled: true
+      rate: 10.0
+      delay:
+        mean: 0.0
+      pose:
+        position: [-0.37, -0.05, 1.05]
+        orientation: [0.0, 0.2617993878, -1.2217304764]
+      resolution:
+        x: 306
+        y: 256
+      intrinsics:
+        fx: 205.25
+        fy: 205.25
+        cx: 153.0
+        cy: 128.0

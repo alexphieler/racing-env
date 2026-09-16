@@ -1,0 +1,8 @@
+{
+        "": {"log-base": "/root/workspace/pacsim_ws/log"},
+        "build": { "base-paths": ["/root/workspace/pacsim_ws/src"],
+            "build-base": "/root/workspace/pacsim_ws/build",
+            "install-base": "/root/workspace/pacsim_ws/install",
+            "symlink-install": true
+        }
+}

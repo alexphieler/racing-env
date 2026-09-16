@@ -1,0 +1,56 @@
+[build-system]
+requires = [
+  "scikit-build-core>=0.10",
+  "pybind11>=2.10",
+  "numpy",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "pacsim"
+version = "0.1.0"
+description = "pacsim Python bindings with Vulkan camera simulation"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+  { name = "pacsim contributors" },
+]
+dependencies = [
+  "numpy",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: C++",
+  "Topic :: Scientific/Engineering",
+]
+
+[tool.scikit-build]
+cmake.minimum-version = "3.15"
+build-dir = "build/{wheel_tag}"
+wheel.license-files = [
+  "LICENSE",
+]
+sdist.include = [
+  "CMakeLists.txt",
+  "README.md",
+  "LICENSE",
+  "include/**",
+  "src/**",
+  "third_party/stb/**",
+  "packaging/**",
+  "doc/**",
+  "config/**",
+  "tracks/**",
+  "assets/**",
+  "urdf/**",
+]
+
+[tool.scikit-build.cmake.define]
+PACSIM_BUILD_ROS = "OFF"
+PACSIM_BUILD_PYTHON = "ON"
+
+[tool.cibuildwheel]
+build = "cp39-* cp310-* cp311-* cp312-*"
+skip = "*-musllinux_*"
+test-command = "python -c \"import pacsim, pacsim_pybind; print(pacsim.bundled_swiftshader_icd_path())\""

@@ -1,0 +1,82 @@
+# docker-compose.yml
+#
+# This file is an equivalent of the provided devcontainer.json.
+# Run `docker compose up -d` to build and start the container.
+# Then, attach to it using VS Code's "Attach to Running Container..." command or `docker exec -it <container_name> /bin/bash`.
+
+services:
+  # This is the main service for your development environment.
+  dev:
+    container_name: fs-rl
+    # Defines how to build the container image.
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Passes the username build argument to the Dockerfile.
+        - USERNAME=devuser
+
+    # Container settings derived from the devcontainer.json.
+    privileged: true
+    # user: devuser
+    working_dir: /root/workspace
+
+    # Network, IPC, and PID settings for better host integration, especially for GUI apps.
+    network_mode: "host"
+    ipc: "host"
+    pid: "host"
+
+    # Keeps the container running in the background.
+    # It also replicates the `postCreateCommand` by first setting the workspace
+    # owner and then idling.
+    command: sh -c "tail -f /dev/null"
+
+    # Environment variables for ROS, display, and NVIDIA drivers.
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+      - ROS_DOMAIN_ID=42
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NV_PRIME_RENDER_OFFLOAD=1
+      - __GLX_VENDOR_LIBRARY_NAME=nvidia
+
+    # GPU access, equivalent to the `--gpus all` run argument.
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    # Volumes for mounting the project workspace, GUI sockets, and host devices.
+    volumes:
+      # Mounts the project directory into the container.
+      - ./pacsim:/root/workspace/pacsim_ws/src
+      - ./pipeline:/root/workspace/pipeline:rw
+      - ./external:/root/workspace/external:rw
+      - ./configs:/root/workspace/configs:rw
+      - ./tracks:/root/workspace/tracks:rw
+      - ./viz:/root/workspace/viz:rw
+      
+      # For GUI application forwarding.
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev/dri:/dev/dri
+
+      # Mounts your host home directory for sharing configs like .gitconfig or .ssh.
+      # Note: On Windows, you might need to change ${HOME} to ${USERPROFILE}.
+      - ${HOME}:/home/devuser/hosthome
+
+      # Mounts for specific configs and hardware access.
+      - ./configs/.tmux.conf:/root/.tmux.conf:ro
+      - /dev/bus/usb:/dev/bus/usb
+      - /media:/media
+
+# --- Important Notes ---
+# The 'customizations' section from devcontainer.json is specific to VS Code
+# and cannot be replicated in Docker Compose. You will need to install the
+# following extensions manually in VS Code after attaching to the container:
+#   - ms-iot.vscode-ros
+#   - eamodio.gitlens
+#   - ms-vscode.cmake-tools
+#   - ms-python.autopep8
